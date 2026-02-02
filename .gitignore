@@ -1,1 +1,7 @@
 venv/
+
+.env
+
+books/__pycache__
+
+books/spiders/__pycache__
