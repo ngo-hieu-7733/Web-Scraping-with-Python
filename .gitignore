@@ -5,3 +5,5 @@ venv/
 books/__pycache__
 
 books/spiders/__pycache__
+
+foo.py

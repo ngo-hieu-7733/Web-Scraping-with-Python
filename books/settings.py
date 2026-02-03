@@ -14,6 +14,9 @@ NEWSPIDER_MODULE = "books.spiders"
 
 ADDONS = {}
 
+# MongoDB connection
+MONGO_URI = "mongodb://localhost:27017"
+MONGO_DATABASE = "books_db"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "books (+http://www.yourdomain.com)"
