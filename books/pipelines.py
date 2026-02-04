@@ -41,21 +41,21 @@ class MongoPipline:
         item_dict = ItemAdapter(item).asdict()
 
         # Update if exist, otherwise create
-        self.db[self.COLLECTION_NAME].update_one(
-            filter={"_id": item_id},
-            update={"$set": item_dict},
-            upsert=True # create if item doesnt exist
-        )
+        # self.db[self.COLLECTION_NAME].update_one(
+        #     filter={"_id": item_id},
+        #     update={"$set": item_dict},
+        #     upsert=True # create if item doesnt exist
+        # )
 
-        return item
+        # return item
     
         # Skip if exist, otherwise create
-        # if self.db[self.COLLECTION_NAME].find_one({"_id": item_id}):
-        #     raise DropItem(f"Duplicate item found: {item}") # tells the framework to discard this item and not to process it further
-        # else:
-        #     item["_id"] = item_id
-        #     self.db[self.COLLECTION_NAME].insert_one(ItemAdapter(item).asdict())
-        #     return item
+        if self.db[self.COLLECTION_NAME].find_one({"_id": item_id}):
+            raise DropItem(f"Duplicate item found: {item}") # tells the framework to discard this item and not to process it further
+        else:
+            item["_id"] = item_id
+            self.db[self.COLLECTION_NAME].insert_one(ItemAdapter(item).asdict())
+            return item
 
     
     def compute_item_id(self, item):

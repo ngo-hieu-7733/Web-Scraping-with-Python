@@ -7,6 +7,10 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+# Logging information
+LOG_LEVEL = "WARNING" # Only log INFO messages or higher, LOG_LEVEL = "DEBUG" by default
+LOG_FILE = "book_scraper.log" # File log that scrapy will write logs in
+
 BOT_NAME = "books"
 
 SPIDER_MODULES = ["books.spiders"]
