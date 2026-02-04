@@ -6,6 +6,10 @@ class BookSpider(scrapy.Spider):
     allowed_domains = ["books.toscrape.com"]
     start_urls = ["https://books.toscrape.com/"]
 
+    def start_requests(self):
+        for url in self.start_requests:
+            yield scrapy.Request(url, callback=self.parse, errback=self.log_error)
+
     def parse(self, response):
         # save data 
         for book in response.css("article.product_pod"):
@@ -20,4 +24,12 @@ class BookSpider(scrapy.Spider):
         if next_page:
             next_page_url = response.urljoin(next_page)
             self.logger.info(f"Navigating to next page with URL {next_page_url}")
-            yield scrapy.Request(url=next_page_url, callback=self.parse)
+            yield scrapy.Request(
+                url=next_page_url, 
+                callback=self.parse, # run callback when receiving the corresponding response
+                errback=self.log_error # run errback when catching an error without stopping the prog
+            )
+
+    # catch error and log it
+    def log_error(self, err):
+        self.logger.error(repr(err))
