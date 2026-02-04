@@ -5,9 +5,12 @@
 
 
 # useful for handling different item types with a single interface
+import hashlib
 import pymongo
 from itemadapter import ItemAdapter
+from scrapy.exceptions import DropItem
 
+# pipeline: connect db -> insert data 
 class MongoPipline:
     COLLECTION_NAME = "books"
 
@@ -32,7 +35,29 @@ class MongoPipline:
     def close_spider(self, spider):
         self.client.close()
 
-    # insert data to db
+    # insert data to db (avoid adding dup entries)
     def process_item(self, item, spider):
-        self.db[self.COLLECTION_NAME].insert_one(ItemAdapter(item).asdict())
+        item_id = self.compute_item_id(item)
+        item_dict = ItemAdapter(item).asdict()
+
+        # Update if exist, otherwise create
+        self.db[self.COLLECTION_NAME].update_one(
+            filter={"_id": item_id},
+            update={"$set": item_dict},
+            upsert=True # create if item doesnt exist
+        )
+
         return item
+    
+        # Skip if exist, otherwise create
+        # if self.db[self.COLLECTION_NAME].find_one({"_id": item_id}):
+        #     raise DropItem(f"Duplicate item found: {item}") # tells the framework to discard this item and not to process it further
+        # else:
+        #     item["_id"] = item_id
+        #     self.db[self.COLLECTION_NAME].insert_one(ItemAdapter(item).asdict())
+        #     return item
+
+    
+    def compute_item_id(self, item):
+        url = str(item["url"])
+        return hashlib.sha256(url.encode("utf-8")).hexdigest()

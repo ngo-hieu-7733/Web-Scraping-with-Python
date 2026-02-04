@@ -61,9 +61,10 @@ DOWNLOAD_DELAY = 1
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "books.pipelines.BooksPipeline": 300,
-#}
+# The integer (300) determines the order in which Scrapy runs the pipelines
+ITEM_PIPELINES = {  
+    "books.pipelines.MongoPipline": 300,   
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
