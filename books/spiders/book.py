@@ -1,17 +1,24 @@
 import scrapy
 from books.items import BooksItem
 
+# scrapy crawl book
 class BookSpider(scrapy.Spider):
     name = "book"
     allowed_domains = ["books.toscrape.com"]
     start_urls = ["https://books.toscrape.com/"]
 
     def start_requests(self):
-        for url in self.start_requests:
+        for url in self.start_urls:
             yield scrapy.Request(url, callback=self.parse, errback=self.log_error)
 
+    # save data 
     def parse(self, response):
-        # save data 
+        """
+        @url https://books.toscrape.com
+        @returns items 20 20
+        @returns request 1 50
+        @scrapes url title price
+        """
         for book in response.css("article.product_pod"):
             item = BooksItem()
             item["url"] = book.css("h3 > a::attr(href)").get()
